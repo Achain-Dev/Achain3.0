@@ -248,6 +248,12 @@ func (w *worker) setEtherbase(addr common.Address) {
 	w.coinbase = addr
 }
 
+func (w *worker) GetBlockSigner(blockNumber uint64) common.Address {
+	idx := int(blockNumber) % len(w.chainConfig.Themis.SignerList)
+	signer := w.chainConfig.Themis.SignerList[idx]
+	return signer
+}
+
 // setExtra sets the content used to initialize the block extra field.
 func (w *worker) setExtra(extra []byte) {
 	w.mu.Lock()
@@ -904,6 +910,9 @@ func (w *worker) commitNewWork(interrupt *int32, noempty bool, timestamp int64) 
 		Extra:      w.extra,
 		Time:       uint64(timestamp),
 	}
+	signer := w.GetBlockSigner(header.Number.Uint64())
+	w.coinbase = signer
+	
 	// Only set the coinbase if our consensus engine is running (avoid spurious block rewards)
 	if w.isRunning() {
 		if w.coinbase == (common.Address{}) {
