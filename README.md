@@ -32,4 +32,4 @@ Steps:
 
 1. Download the binary, config and genesis files from release, or compile the binary by make geth.
 2. Init genesis state: ./geth --datadir node init genesis.json.
-3. Start your fullnode: ./geth --datadir ./node --gcmode archive --networkid 59300 --bootnodes 'enode://1126d31cc48d3de8cc5195f57d462a0926cad3e1c892e2125060dfb1e6a125f6f0585f8e2557ee3deb50d56b232ec71a0c3836622279f543d3158dea6fc5f4c6@18.179.72.144:30303'
+3. Start your fullnode: ./geth --datadir ./node --gcmode archive --networkid 59300 --bootnodes 'enode://1f14afeabd113902df98e739864edcd6bc00ffdd816e93e7622c9ba95488faac0cf5aa684bb9e5489b63e1f8077fe36aafb38a4b6df7259edd04d7a5bd5d59cd@18.179.72.144:30303'
