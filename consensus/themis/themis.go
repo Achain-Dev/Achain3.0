@@ -225,7 +225,7 @@ func accumulateRewards(config *params.ThemisConfig, state *state.StateDB, header
 		annulBlockAmount = params.AnnulBlockAmount
 		blockReward      = big.NewInt(1e+18)
 	)
-	yearNumber := header.Number.Int64() / annulBlockAmount.Int64()
+	yearNumber := header.Number.Int64() / (annulBlockAmount.Int64() / 2)
 	currentReward := (int64)(basicReward * math.Pow(annulProfit, float64(yearNumber)))
 	precisionReward := new(big.Int).Mul(big.NewInt(currentReward), blockReward)
 	reward := new(big.Int).Set(precisionReward)
