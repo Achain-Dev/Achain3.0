@@ -23,7 +23,7 @@ import "math/big"
 
 // block reward
 var (
-	AnnulProfit = 1.1
+	AnnulProfit = 1.2
 	AnnulBlockAmount = big.NewInt(3153600)
 )
 
