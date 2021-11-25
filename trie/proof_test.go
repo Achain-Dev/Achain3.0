@@ -678,6 +678,16 @@ func benchmarkVerifyRangeProof(b *testing.B, size int) {
 	}
 }
 
+func TestEmptyValueRangeProof(t *testing.T) {
+	trie, values := randomTrie(512)
+	var entries entrySlice
+	for _, kv := range values {
+		entries = append(entries, kv)
+	}
+	sort.Sort(entries)
+}
+
+
 func randomTrie(n int) (*Trie, map[string]*kv) {
 	trie := new(Trie)
 	vals := make(map[string]*kv)
