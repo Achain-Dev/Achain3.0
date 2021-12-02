@@ -278,6 +278,7 @@ func TestSendTransactions63(t *testing.T) { testSendTransactions(t, 63) }
 func TestSendTransactions64(t *testing.T) { testSendTransactions(t, 64) }
 func TestSendTransactions65(t *testing.T) { testSendTransactions(t, 65) }
 
+
 func testSendTransactions(t *testing.T, protocol int) {
 	pm, _ := newTestProtocolManagerMust(t, downloader.FullSync, 0, nil, nil)
 	defer pm.Stop()
