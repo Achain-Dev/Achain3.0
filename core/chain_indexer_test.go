@@ -155,6 +155,8 @@ func (b *testChainIndexBackend) assertSections() {
 	b.t.Fatalf("Canonical section count mismatch: have %v, want %v", sections, b.stored)
 }
 
+
+
 // assertBlocks expects processing calls after new blocks have arrived. If the
 // failNum < headNum then we are simulating a scenario where a reorg has happened
 // after the processing has started and the processing of a section fails.
