@@ -93,6 +93,7 @@ func TestClientErrorData(t *testing.T) {
 	}
 }
 
+
 func TestClientBatchRequest(t *testing.T) {
 	server := newTestServer()
 	defer server.Stop()
