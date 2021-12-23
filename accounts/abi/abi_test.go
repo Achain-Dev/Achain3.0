@@ -61,6 +61,7 @@ const jsondata = `
 	{ "type" : "function", "name" : "overloadedNames", "stateMutability" : "view", "inputs": [ { "components": [ { "internalType": "uint256", "name": "_f",	"type": "uint256" }, { "internalType": "uint256", "name": "__f", "type": "uint256"}, { "internalType": "uint256", "name": "f", "type": "uint256"}],"internalType": "struct Overloader.F", "name": "f","type": "tuple"}]}
 ]`
 
+
 var (
 	Uint256, _    = NewType("uint256", "", nil)
 	Uint32, _     = NewType("uint32", "", nil)
