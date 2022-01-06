@@ -50,6 +50,7 @@ func testNodeIndex(id enode.ID) int {
 	return int(id[1]) + int(id[2])*256
 }
 
+
 type serverPoolTest struct {
 	db                   ethdb.KeyValueStore
 	clock                *mclock.Simulated
