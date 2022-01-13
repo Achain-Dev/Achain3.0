@@ -62,6 +62,7 @@ func TestKDF(t *testing.T) {
 	}
 }
 
+
 var ErrBadSharedKeys = fmt.Errorf("ecies: shared keys don't match")
 
 // cmpParams compares a set of ECIES parameters. We assume, as per the
