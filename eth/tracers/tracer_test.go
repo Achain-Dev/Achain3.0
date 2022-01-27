@@ -30,6 +30,7 @@ import (
 	"github.com/ethereum/go-ethereum/params"
 )
 
+
 type account struct{}
 
 func (account) SubBalance(amount *big.Int)                          {}
