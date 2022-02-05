@@ -23,6 +23,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/route53"
 )
 
+
 // This test checks that computeChanges/splitChanges create DNS changes in
 // leaf-added -> root-changed -> leaf-deleted order.
 func TestRoute53ChangeSort(t *testing.T) {
