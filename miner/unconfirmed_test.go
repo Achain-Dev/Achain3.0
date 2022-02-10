@@ -23,6 +23,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
+
 // noopChainRetriever is an implementation of headerRetriever that always
 // returns nil for any requested headers.
 type noopChainRetriever struct{}
