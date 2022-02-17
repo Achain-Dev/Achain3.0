@@ -41,6 +41,7 @@ func (r *testReplayer) Delete(key []byte) error {
 	return nil
 }
 
+
 func testTableDatabase(t *testing.T, prefix string) {
 	db := NewTable(NewMemoryDatabase(), prefix)
 
