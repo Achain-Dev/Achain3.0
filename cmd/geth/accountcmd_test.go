@@ -42,6 +42,7 @@ func tmpDatadirWithKeystore(t *testing.T) string {
 	return datadir
 }
 
+
 func TestAccountListEmpty(t *testing.T) {
 	geth := runGeth(t, "account", "list")
 	geth.ExpectExit()
