@@ -630,6 +630,7 @@ func TestOffset(t *testing.T) {
 	checkPresent(1000000)
 }
 
+
 // TODO (?)
 // - test that if we remove several head-files, aswell as data last data-file,
 //   the index is truncated accordingly
