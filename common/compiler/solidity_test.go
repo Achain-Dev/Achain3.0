@@ -33,6 +33,7 @@ contract test {
 `
 )
 
+
 func skipWithoutSolc(t *testing.T) {
 	if _, err := exec.LookPath("solc"); err != nil {
 		t.Skip(err)
