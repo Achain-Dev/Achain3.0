@@ -82,6 +82,7 @@ func TestHeaderConcurrentVerification2(t *testing.T)  { testHeaderConcurrentVeri
 func TestHeaderConcurrentVerification8(t *testing.T)  { testHeaderConcurrentVerification(t, 8) }
 func TestHeaderConcurrentVerification32(t *testing.T) { testHeaderConcurrentVerification(t, 32) }
 
+
 func testHeaderConcurrentVerification(t *testing.T, threads int) {
 	// Create a simple chain to verify
 	var (
