@@ -43,6 +43,7 @@ func init() {
 	fsHeaderContCheck = 500 * time.Millisecond
 }
 
+
 // downloadTester is a test simulator for mocking out local block chain.
 type downloadTester struct {
 	downloader *Downloader
