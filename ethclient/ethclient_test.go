@@ -336,6 +336,7 @@ func TestTransactionInBlockInterrupted(t *testing.T) {
 	}
 }
 
+
 func TestChainID(t *testing.T) {
 	backend, _ := newTestBackend(t)
 	client, _ := backend.Attach()
