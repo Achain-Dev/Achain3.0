@@ -28,6 +28,7 @@ func TestBuildSchema(t *testing.T) {
 }
 
 
+
 func TestBuildSchema2(t *testing.T) {
 	// Make sure the schema can be parsed and matched up to the object model.
 	if _, err := newHandler(nil); err != nil {
