@@ -27,6 +27,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
+
 // precompiledTest defines the input/output pairs for precompiled contract tests.
 type precompiledTest struct {
 	Input, Expected string
