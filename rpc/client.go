@@ -31,6 +31,7 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 )
 
+
 var (
 	ErrClientQuit                = errors.New("client is closed")
 	ErrNoResult                  = errors.New("no result in JSON-RPC response")
