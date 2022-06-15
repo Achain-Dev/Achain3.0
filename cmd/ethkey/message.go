@@ -37,6 +37,7 @@ var msgfileFlag = cli.StringFlag{
 	Usage: "file containing the message to sign/verify",
 }
 
+
 var commandSignMessage = cli.Command{
 	Name:      "signmessage",
 	Usage:     "sign a message",
