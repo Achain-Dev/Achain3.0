@@ -56,6 +56,7 @@ const (
 	chainHeadChanSize = 10
 )
 
+
 type txPool interface {
 	// SubscribeNewTxsEvent should return an event subscription of
 	// NewTxsEvent and send events to the given channel.
