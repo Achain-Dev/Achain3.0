@@ -44,6 +44,7 @@ func NewCheckpointOracle(contractAddr common.Address, backend bind.ContractBacke
 	return &CheckpointOracle{address: contractAddr, contract: c}, nil
 }
 
+
 // ContractAddr returns the address of contract.
 func (oracle *CheckpointOracle) ContractAddr() common.Address {
 	return oracle.address
