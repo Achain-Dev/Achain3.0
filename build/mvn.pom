@@ -14,6 +14,7 @@
   <url>https://github.com/ethereum/go-ethereum</url>
   <inceptionYear>2015</inceptionYear>
 
+
   <licenses>
     <license>
       <name>GNU Lesser General Public License, Version 3.0</name>
