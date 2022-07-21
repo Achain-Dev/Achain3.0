@@ -23,6 +23,7 @@ import (
 	"time"
 )
 
+
 type testEvent int
 
 func TestSubCloseUnsub(t *testing.T) {
