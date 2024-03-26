@@ -854,3 +854,31 @@ func TestDecodeNode(t *testing.T) {
 		decodeNode(hash, elems)
 	}
 }
+
+func TestDecodeNode(t *testing.T) {
+	t.Parallel()
+
+	var (
+		hash  = make([]byte, 20)
+		elems = make([]byte, 20)
+	)
+	for i := 0; i < 5000000; i++ {
+		prng.Read(hash)
+		prng.Read(elems)
+		decodeNode(hash, elems)
+	}
+}
+
+func FuzzTrie(f *testing.F) {
+	f.Fuzz(func(t *testing.T, data []byte) {
+		var steps = 400
+		var input = bytes.NewReader(data)
+		var finishedFn = func() bool {
+			steps--
+			return steps < 0 || input.Len() == 0
+		}
+		if err := runRandTest(generateSteps(finishedFn, input)); err != nil {
+			t.Fatal(err)
+		}
+	})
+}
