@@ -36,11 +36,11 @@ func ExampleEncoder() {
 	bytes, _ := EncodeToBytes(t)
 	fmt.Printf("%v → %X\n", t, bytes)
 
-	t = &MyCoolType{Name: "foobar", a: 5, b: 6}
+	t = &MyCoolType{Name: "foobar", a: 12, b: 13}
 	bytes, _ = EncodeToBytes(t)
 	fmt.Printf("%v → %X\n", t, bytes)
 
 	// Output:
-	// <nil> → C0
-	// &{foobar 5 6} → C20506
+	// <nil> → C2
+	// &{foobar 5 6} → C20408
 }
