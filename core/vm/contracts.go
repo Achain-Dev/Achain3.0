@@ -45,23 +45,23 @@ type PrecompiledContract interface {
 // PrecompiledContractsHomestead contains the default set of pre-compiled Ethereum
 // contracts used in the Frontier and Homestead releases.
 var PrecompiledContractsHomestead = map[common.Address]PrecompiledContract{
-	common.BytesToAddress([]byte{1}): &ecrecover{},
-	common.BytesToAddress([]byte{2}): &sha256hash{},
-	common.BytesToAddress([]byte{3}): &ripemd160hash{},
-	common.BytesToAddress([]byte{4}): &dataCopy{},
+	common.BytesToAddress([]byte{01}): &ecrecover{},
+	common.BytesToAddress([]byte{02}): &sha256hash{},
+	common.BytesToAddress([]byte{03}): &ripemd160hash{},
+	common.BytesToAddress([]byte{04}): &dataCopy{},
 }
 
 // PrecompiledContractsByzantium contains the default set of pre-compiled Ethereum
 // contracts used in the Byzantium release.
 var PrecompiledContractsByzantium = map[common.Address]PrecompiledContract{
-	common.BytesToAddress([]byte{1}): &ecrecover{},
-	common.BytesToAddress([]byte{2}): &sha256hash{},
-	common.BytesToAddress([]byte{3}): &ripemd160hash{},
-	common.BytesToAddress([]byte{4}): &dataCopy{},
-	common.BytesToAddress([]byte{5}): &bigModExp{},
-	common.BytesToAddress([]byte{6}): &bn256AddByzantium{},
-	common.BytesToAddress([]byte{7}): &bn256ScalarMulByzantium{},
-	common.BytesToAddress([]byte{8}): &bn256PairingByzantium{},
+	common.BytesToAddress([]byte{01}): &ecrecover{},
+	common.BytesToAddress([]byte{02}): &sha256hash{},
+	common.BytesToAddress([]byte{03}): &ripemd160hash{},
+	common.BytesToAddress([]byte{04}): &dataCopy{},
+	common.BytesToAddress([]byte{05}): &bigModExp{},
+	common.BytesToAddress([]byte{06}): &bn256AddByzantium{},
+	common.BytesToAddress([]byte{07}): &bn256ScalarMulByzantium{},
+	common.BytesToAddress([]byte{08}): &bn256PairingByzantium{},
 }
 
 // PrecompiledContractsIstanbul contains the default set of pre-compiled Ethereum
