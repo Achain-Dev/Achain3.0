@@ -789,6 +789,12 @@ func TestLightVsFastVsFullChainHeads(t *testing.T) {
 	if n, err := ancient.InsertHeaderChain(headers, 1); err != nil {
 		t.Fatalf("failed to insert header %d: %v", n, err)
 	}
+	
+	ancientDb, err := rawdb.NewDatabaseWithFreezer(rawdb.NewMemoryDatabase(), "", "", false)
+	if err != nil {
+		t.Fatalf("failed to create temp freezer db: %v", err)
+	}
+	
 	if n, err := ancient.InsertReceiptChain(blocks, receipts, uint64(3*len(blocks)/4)); err != nil {
 		t.Fatalf("failed to insert receipt %d: %v", n, err)
 	}
