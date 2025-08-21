@@ -17,12 +17,16 @@
 package common
 
 import (
+	"bytes"
 	"database/sql/driver"
 	"encoding/json"
+	"fmt"
+	"math"
 	"math/big"
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestBytesConversion(t *testing.T) {
@@ -152,8 +156,32 @@ func BenchmarkAddressHex(b *testing.B) {
 	}
 }
 
-func TestMixedcaseAccount_Address(t *testing.T) {
+// Test checks if the customized json marshaller of MixedcaseAddress object
+// is invoked correctly. In golang the struct pointer will inherit the
+// non-pointer receiver methods, the reverse is not true. In the case of
+// MixedcaseAddress, it must define the MarshalJSON method in the object
+// but not the pointer level, so that this customized marshalled can be used
+// for both MixedcaseAddress object and pointer.
+func TestMixedcaseAddressMarshal(t *testing.T) {
+	var (
+		output string
+		input  = "0xae967917c465db8578ca9024c205720b1a3651A9"
+	)
+	addr, err := NewMixedcaseAddressFromString(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	blob, err := json.Marshal(*addr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	json.Unmarshal(blob, &output)
+	if output != input {
+		t.Fatal("Failed to marshal/unmarshal MixedcaseAddress object")
+	}
+}
 
+func TestMixedcaseAccount_Address(t *testing.T) {
 	// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md
 	// Note: 0X{checksum_addr} is not valid according to spec above
 
@@ -176,7 +204,7 @@ func TestMixedcaseAccount_Address(t *testing.T) {
 		}
 	}
 
-	//These should throw exceptions:
+	// These should throw exceptions:
 	var r2 []MixedcaseAddress
 	for _, r := range []string{
 		`["0x11111111111111111111122222222222233333"]`,     // Too short
@@ -190,9 +218,7 @@ func TestMixedcaseAccount_Address(t *testing.T) {
 		if err := json.Unmarshal([]byte(r), &r2); err == nil {
 			t.Errorf("Expected failure, input %v", r)
 		}
-
 	}
-
 }
 
 func TestHash_Scan(t *testing.T) {
@@ -369,5 +395,230 @@ func TestAddress_Value(t *testing.T) {
 				t.Errorf("Address.Value() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestAddress_Format(t *testing.T) {
+	b := []byte{
+		0xb2, 0x6f, 0x2b, 0x34, 0x2a, 0xab, 0x24, 0xbc, 0xf6, 0x3e,
+		0xa2, 0x18, 0xc6, 0xa9, 0x27, 0x4d, 0x30, 0xab, 0x9a, 0x15,
+	}
+	var addr Address
+	addr.SetBytes(b)
+
+	tests := []struct {
+		name string
+		out  string
+		want string
+	}{
+		{
+			name: "println",
+			out:  fmt.Sprintln(addr),
+			want: "0xB26f2b342AAb24BCF63ea218c6A9274D30Ab9A15\n",
+		},
+		{
+			name: "print",
+			out:  fmt.Sprint(addr),
+			want: "0xB26f2b342AAb24BCF63ea218c6A9274D30Ab9A15",
+		},
+		{
+			name: "printf-s",
+			out: func() string {
+				buf := new(bytes.Buffer)
+				fmt.Fprintf(buf, "%s", addr)
+				return buf.String()
+			}(),
+			want: "0xB26f2b342AAb24BCF63ea218c6A9274D30Ab9A15",
+		},
+		{
+			name: "printf-q",
+			out:  fmt.Sprintf("%q", addr),
+			want: `"0xB26f2b342AAb24BCF63ea218c6A9274D30Ab9A15"`,
+		},
+		{
+			name: "printf-x",
+			out:  fmt.Sprintf("%x", addr),
+			want: "b26f2b342aab24bcf63ea218c6a9274d30ab9a15",
+		},
+		{
+			name: "printf-X",
+			out:  fmt.Sprintf("%X", addr),
+			want: "B26F2B342AAB24BCF63EA218C6A9274D30AB9A15",
+		},
+		{
+			name: "printf-#x",
+			out:  fmt.Sprintf("%#x", addr),
+			want: "0xb26f2b342aab24bcf63ea218c6a9274d30ab9a15",
+		},
+		{
+			name: "printf-v",
+			out:  fmt.Sprintf("%v", addr),
+			want: "0xB26f2b342AAb24BCF63ea218c6A9274D30Ab9A15",
+		},
+		// The original default formatter for byte slice
+		{
+			name: "printf-d",
+			out:  fmt.Sprintf("%d", addr),
+			want: "[178 111 43 52 42 171 36 188 246 62 162 24 198 169 39 77 48 171 154 21]",
+		},
+		// Invalid format char.
+		{
+			name: "printf-t",
+			out:  fmt.Sprintf("%t", addr),
+			want: "%!t(address=b26f2b342aab24bcf63ea218c6a9274d30ab9a15)",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.out != tt.want {
+				t.Errorf("%s does not render as expected:\n got %s\nwant %s", tt.name, tt.out, tt.want)
+			}
+		})
+	}
+}
+
+func TestHash_Format(t *testing.T) {
+	var hash Hash
+	hash.SetBytes([]byte{
+		0xb2, 0x6f, 0x2b, 0x34, 0x2a, 0xab, 0x24, 0xbc, 0xf6, 0x3e,
+		0xa2, 0x18, 0xc6, 0xa9, 0x27, 0x4d, 0x30, 0xab, 0x9a, 0x15,
+		0xa2, 0x18, 0xc6, 0xa9, 0x27, 0x4d, 0x30, 0xab, 0x9a, 0x15,
+		0x10, 0x00,
+	})
+
+	tests := []struct {
+		name string
+		out  string
+		want string
+	}{
+		{
+			name: "println",
+			out:  fmt.Sprintln(hash),
+			want: "0xb26f2b342aab24bcf63ea218c6a9274d30ab9a15a218c6a9274d30ab9a151000\n",
+		},
+		{
+			name: "print",
+			out:  fmt.Sprint(hash),
+			want: "0xb26f2b342aab24bcf63ea218c6a9274d30ab9a15a218c6a9274d30ab9a151000",
+		},
+		{
+			name: "printf-s",
+			out: func() string {
+				buf := new(bytes.Buffer)
+				fmt.Fprintf(buf, "%s", hash)
+				return buf.String()
+			}(),
+			want: "0xb26f2b342aab24bcf63ea218c6a9274d30ab9a15a218c6a9274d30ab9a151000",
+		},
+		{
+			name: "printf-q",
+			out:  fmt.Sprintf("%q", hash),
+			want: `"0xb26f2b342aab24bcf63ea218c6a9274d30ab9a15a218c6a9274d30ab9a151000"`,
+		},
+		{
+			name: "printf-x",
+			out:  fmt.Sprintf("%x", hash),
+			want: "b26f2b342aab24bcf63ea218c6a9274d30ab9a15a218c6a9274d30ab9a151000",
+		},
+		{
+			name: "printf-X",
+			out:  fmt.Sprintf("%X", hash),
+			want: "B26F2B342AAB24BCF63EA218C6A9274D30AB9A15A218C6A9274D30AB9A151000",
+		},
+		{
+			name: "printf-#x",
+			out:  fmt.Sprintf("%#x", hash),
+			want: "0xb26f2b342aab24bcf63ea218c6a9274d30ab9a15a218c6a9274d30ab9a151000",
+		},
+		{
+			name: "printf-#X",
+			out:  fmt.Sprintf("%#X", hash),
+			want: "0XB26F2B342AAB24BCF63EA218C6A9274D30AB9A15A218C6A9274D30AB9A151000",
+		},
+		{
+			name: "printf-v",
+			out:  fmt.Sprintf("%v", hash),
+			want: "0xb26f2b342aab24bcf63ea218c6a9274d30ab9a15a218c6a9274d30ab9a151000",
+		},
+		// The original default formatter for byte slice
+		{
+			name: "printf-d",
+			out:  fmt.Sprintf("%d", hash),
+			want: "[178 111 43 52 42 171 36 188 246 62 162 24 198 169 39 77 48 171 154 21 162 24 198 169 39 77 48 171 154 21 16 0]",
+		},
+		// Invalid format char.
+		{
+			name: "printf-t",
+			out:  fmt.Sprintf("%t", hash),
+			want: "%!t(hash=b26f2b342aab24bcf63ea218c6a9274d30ab9a15a218c6a9274d30ab9a151000)",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.out != tt.want {
+				t.Errorf("%s does not render as expected:\n got %s\nwant %s", tt.name, tt.out, tt.want)
+			}
+		})
+	}
+}
+
+func TestAddressEIP55(t *testing.T) {
+	addr := HexToAddress("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed")
+	addrEIP55 := AddressEIP55(addr)
+
+	if addr.Hex() != addrEIP55.String() {
+		t.Fatal("AddressEIP55 should match original address hex")
+	}
+
+	blob, err := addrEIP55.MarshalJSON()
+	if err != nil {
+		t.Fatal("Failed to marshal AddressEIP55", err)
+	}
+	if strings.Trim(string(blob), "\"") != addr.Hex() {
+		t.Fatal("Address with checksum is expected")
+	}
+	var dec Address
+	if err := json.Unmarshal(blob, &dec); err != nil {
+		t.Fatal("Failed to unmarshal AddressEIP55", err)
+	}
+	if addr != dec {
+		t.Fatal("Unexpected address after unmarshal")
+	}
+}
+
+func BenchmarkPrettyDuration(b *testing.B) {
+	var x = PrettyDuration(time.Duration(int64(1203123912312)))
+	b.Logf("Pre %s", time.Duration(x).String())
+	var a string
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		a = x.String()
+	}
+	b.Logf("Post %s", a)
+}
+
+func TestDecimalUnmarshalJSON(t *testing.T) {
+	// These should error
+	for _, tc := range []string{``, `"`, `""`, `"-1"`} {
+		if err := new(Decimal).UnmarshalJSON([]byte(tc)); err == nil {
+			t.Errorf("input %s should cause error", tc)
+		}
+	}
+	// These should succeed
+	for _, tc := range []struct {
+		input string
+		want  uint64
+	}{
+		{`"0"`, 0},
+		{`"9223372036854775807"`, math.MaxInt64},
+		{`"18446744073709551615"`, math.MaxUint64},
+	} {
+		have := new(Decimal)
+		if err := have.UnmarshalJSON([]byte(tc.input)); err != nil {
+			t.Errorf("input %q triggered error: %v", tc.input, err)
+		}
+		if uint64(*have) != tc.want {
+			t.Errorf("input %q, have %d want %d", tc.input, *have, tc.want)
+		}
 	}
 }
